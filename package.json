@@ -1,0 +1,30 @@
+{
+  "name": "coding-language-detection",
+  "version": "1.0.0",
+  "description": "A lightweight JavaScript tool that can accurately detect programming languages from code snippets",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "node tests/unit-tests.js",
+    "test:unit": "node tests/unit-tests.js",
+    "test:integration": "node tests/integration-tests.js",
+    "test:performance": "node tests/performance-tests.js"
+  },
+  "keywords": [
+    "language-detection",
+    "programming-languages",
+    "javascript",
+    "code-analysis",
+    "syntax-detection"
+  ],
+  "author": "Arshdeep Singh Malhotra",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/malhotraarshdeepsingh/coding-language-detection.git"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.0"
+  }
+}

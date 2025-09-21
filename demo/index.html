@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coding Language Detection Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        
+        .input-section {
+            margin-bottom: 30px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #555;
+        }
+        
+        textarea {
+            width: 100%;
+            height: 200px;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            resize: vertical;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+        }
+        
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 5px solid #667eea;
+        }
+        
+        .language {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .confidence {
+            font-size: 18px;
+            color: #666;
+        }
+        
+        .examples {
+            margin-top: 30px;
+        }
+        
+        .example-btn {
+            margin: 5px;
+            padding: 8px 15px;
+            background: #f1f3f4;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .example-btn:hover {
+            background: #e1e3e4;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Coding Language Detection</h1>
+        
+        <div class="input-section">
+            <label for="codeInput">Paste your code here:</label>
+            <textarea id="codeInput" placeholder="Enter your code snippet here..."></textarea>
+            <br><br>
+            <button onclick="detectLanguage()">Detect Language</button>
+        </div>
+        
+        <div id="result" class="result" style="display: none;">
+            <div class="language" id="detectedLanguage"></div>
+            <div class="confidence" id="confidenceScore"></div>
+        </div>
+        
+        <div class="examples">
+            <h3>Try these examples:</h3>
+            <button class="example-btn" onclick="loadExample('js')">JavaScript</button>
+            <button class="example-btn" onclick="loadExample('python')">Python</button>
+            <button class="example-btn" onclick="loadExample('java')">Java</button>
+            <button class="example-btn" onclick="loadExample('cpp')">C++</button>
+        </div>
+    </div>
+
+    <script>
+        // Simple language detection for demo purposes
+        const languagePatterns = {
+            javascript: [/function\s+\w+\s*\(/, /console\.log\s*\(/, /var\s+\w+\s*=/, /let\s+\w+\s*=/, /const\s+\w+\s*=/],
+            python: [/def\s+\w+\s*\(/, /print\s*\(/, /import\s+\w+/, /if\s+__name__\s*==\s*['"]\__main__['"]/, /class\s+\w+\s*\(/],
+            java: [/public\s+class\s+\w+/, /public\s+static\s+void\s+main/, /System\.out\.print/, /import\s+java\./, /private\s+\w+\s+\w+/],
+            cpp: [/#include\s*<\w+>/, /int\s+main\s*\(/, /std::cout/, /using\s+namespace\s+std/, /cout\s*<</, /#include\s*"\w+"/],
+            csharp: [/using\s+System/, /public\s+class\s+\w+/, /static\s+void\s+Main/, /Console\.WriteLine/, /namespace\s+\w+/]
+        };
+
+        function detectLanguageFromCode(code) {
+            const scores = {};
+            
+            for (const [language, patterns] of Object.entries(languagePatterns)) {
+                scores[language] = 0;
+                patterns.forEach(pattern => {
+                    if (pattern.test(code)) scores[language]++;
+                });
+            }
+            
+            const detected = Object.keys(scores).reduce((a, b) => scores[a] > scores[b] ? a : b);
+            return scores[detected] > 0 ? detected : 'unknown';
+        }
+
+        function getConfidenceFromCode(code) {
+            const detected = detectLanguageFromCode(code);
+            const patterns = languagePatterns[detected] || [];
+            const matches = patterns.filter(pattern => pattern.test(code)).length;
+            return Math.min(100, Math.round((matches / patterns.length) * 100));
+        }
+
+        const examples = {
+            js: `function fibonacci(n) {
+    if (n <= 1) return n;
+    return fibonacci(n - 1) + fibonacci(n - 2);
+}
+
+console.log(fibonacci(10));`,
+            
+            python: `def fibonacci(n):
+    if n <= 1:
+        return n
+    return fibonacci(n - 1) + fibonacci(n - 2)
+
+print(fibonacci(10))`,
+            
+            java: `public class Fibonacci {
+    public static int fibonacci(int n) {
+        if (n <= 1) return n;
+        return fibonacci(n - 1) + fibonacci(n - 2);
+    }
+    
+    public static void main(String[] args) {
+        System.out.println(fibonacci(10));
+    }
+}`,
+            
+            cpp: `#include <iostream>
+using namespace std;
+
+int fibonacci(int n) {
+    if (n <= 1) return n;
+    return fibonacci(n - 1) + fibonacci(n - 2);
+}
+
+int main() {
+    cout << fibonacci(10) << endl;
+    return 0;
+}`
+        };
+        
+        function loadExample(lang) {
+            document.getElementById('codeInput').value = examples[lang];
+        }
+        
+        function detectLanguage() {
+            const code = document.getElementById('codeInput').value;
+            if (!code.trim()) {
+                alert('Please enter some code!');
+                return;
+            }
+            
+            const detected = detectLanguageFromCode(code);
+            const confidence = getConfidenceFromCode(code);
+            
+            document.getElementById('detectedLanguage').textContent = `Detected Language: ${detected.toUpperCase()}`;
+            document.getElementById('confidenceScore').textContent = `Confidence Score: ${confidence}%`;
+            document.getElementById('result').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
