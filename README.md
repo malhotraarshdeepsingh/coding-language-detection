@@ -94,26 +94,6 @@ npm install -g nodemon
 nodemon index.js
 ```
 
-### 5. Usage Example
-
-```javascript
-// Import the language detector
-const detectLanguage = require('./languageDetector');
-
-// Example code snippets
-const codeSnippets = [
-    'function hello() { console.log("Hello World!"); }',
-    'def hello(): print("Hello World!")',
-    'public class Hello { public static void main(String[] args) { System.out.println("Hello World!"); } }'
-];
-
-// Detect languages
-codeSnippets.forEach(code => {
-    const detectedLanguage = detectLanguage(code);
-    console.log(`Detected Language: ${detectedLanguage}`);
-});
-```
-
 ## 📸 Snaps
 
 ### 🖥️ Main Interface & Live Demo
@@ -206,3 +186,4 @@ If this project helped you, please consider:
     <a href="#top">Back to top ↑</a>
   </p>
 </div>
+
